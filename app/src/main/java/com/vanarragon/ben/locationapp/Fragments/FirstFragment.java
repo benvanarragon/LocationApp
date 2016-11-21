@@ -1,7 +1,7 @@
 package com.vanarragon.ben.locationapp.Fragments;
 
 /**
- * Created by jamin on 2016-11-19.
+ * Created by jamin on 2016-11-19.  
  */
 
 import android.Manifest;
@@ -29,6 +29,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.vision.text.Text;
+import com.vanarragon.ben.locationapp.Interfaces.FragmentInteraction;
 import com.vanarragon.ben.locationapp.R;
 
 public class FirstFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
@@ -55,10 +56,18 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
     private static final int REQUEST_FINE_LOCATION=0;
 
 
+    //if we extened fragmentInteraction.java interface variable
+    //private OnFragmentInteractionListener mListener;
 
     //view for fragment
     View myView;
 
+
+    //this is called from main activity class to make a reference in the beginning of the app
+    public static FirstFragment newInstance() {
+        FirstFragment fragment = new FirstFragment();
+        return fragment;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,12 +92,6 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
         if(checkPlayServices()){
             buildGoogleApiClient();
-
-
-
-
-
-
         }
 
         btnShowLocation.setOnClickListener(new View.OnClickListener() {
@@ -170,17 +173,8 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
     private void displayLocation(){
 
+        getLastLocation();
 
-        //call permissions stuff
-        //loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION,REQUEST_FINE_LOCATION);
-
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
-                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_FINE_LOCATION);
-            }
-        }
-
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if(mLastLocation != null) {
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
@@ -189,6 +183,13 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         }else{
             lblLocation.setText("Couldn't get a location. Make sure your location services are enabled");
         }
+
+        //if we extend FragmentInteraction for the interface
+        //interface setting variables of locations to pass
+        //if(mListener != null){
+        //    mListener.onFragmentInteraction(mLastLocation);
+        //}
+
     }
 
     private void togglePeriodicLocationUpdates(){
@@ -214,7 +215,8 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
             .addConnectionCallbacks(this)
             .addOnConnectionFailedListener(this)
-            .addApi(LocationServices.API).build();
+            .addApi(LocationServices.API)
+            .build();
     }
 
     protected void createLocationRequest(){
@@ -287,5 +289,20 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         Toast.makeText(getActivity().getApplicationContext(), "Location Changed", Toast.LENGTH_SHORT).show();
 
         displayLocation();
+    }
+
+
+
+    public void getLastLocation(){
+        //call permissions stuff
+        //loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION,REQUEST_FINE_LOCATION);
+
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION},REQUEST_FINE_LOCATION);
+            }
+        }
+
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 }

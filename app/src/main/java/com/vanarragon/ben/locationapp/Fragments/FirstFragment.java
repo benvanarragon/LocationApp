@@ -1,12 +1,14 @@
 package com.vanarragon.ben.locationapp.Fragments;
 
 /**
- * Created by jamin on 2016-11-19.  
+ * Created by jamin on 2016-11-19.
  */
 
 import android.Manifest;
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,9 +30,15 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.vision.text.Text;
 import com.vanarragon.ben.locationapp.Interfaces.FragmentInteraction;
 import com.vanarragon.ben.locationapp.R;
+
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 public class FirstFragment extends Fragment implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,LocationListener{
@@ -50,6 +58,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
     private static int DISPLACEMENT = 10;
 
     private TextView lblLocation;
+    private TextView lblDate;
     private Button btnShowLocation, btnStartLocationUpdates;
 
     //permissions stuff
@@ -87,6 +96,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         myView = inflater.inflate(R.layout.first_layout, container, false);
 
         lblLocation = (TextView) myView.findViewById(R.id.lblLocation);
+        lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
         btnShowLocation = (Button) myView.findViewById(R.id.btnShowLocation);
         btnStartLocationUpdates = (Button) myView.findViewById(R.id.btnStartLocationUpdates);
 
@@ -175,14 +185,28 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
         getLastLocation();
 
+
         if(mLastLocation != null) {
             double latitude = mLastLocation.getLatitude();
             double longitude = mLastLocation.getLongitude();
 
-            lblLocation.setText(latitude + " " + longitude);
+            LatLng latLng = new LatLng(latitude, longitude);
+            String address = getAddressFromLatLng(latLng);
+            lblLocation.setText("Address: " + address);
+
+
         }else{
             lblLocation.setText("Couldn't get a location. Make sure your location services are enabled");
         }
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
+        String formattedDate = sdf.format(c.getTime());
+        lblDate.setText("Current time: " + formattedDate);
+
+
+        //String formattedDate = sdf.format(c.getTime());
+        //lblDate.setText("Date: " + formattedDate);
 
         //if we extend FragmentInteraction for the interface
         //interface setting variables of locations to pass
@@ -190,6 +214,29 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         //    mListener.onFragmentInteraction(mLastLocation);
         //}
 
+    }
+
+    //gets physical address location from a latitude and a longitude
+    private String getAddressFromLatLng(LatLng latlng){
+
+        //it converts to irish not english...fix this later, ask david
+        Geocoder geocoder = new Geocoder(getActivity(), Locale.ENGLISH);
+
+        String strAddress = "";
+        Address address;
+
+        try{
+            address = geocoder
+                    .getFromLocation(latlng.latitude, latlng.longitude,1)
+                    .get(0);
+            strAddress = address.getAddressLine(0) +
+                    ", " + address.getAddressLine(1) +
+                    ", " + address.getAddressLine(2);
+        }
+        catch (IOException e){
+
+        }
+        return strAddress;
     }
 
     private void togglePeriodicLocationUpdates(){

@@ -74,7 +74,7 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
     // Adding new shop
-    public void addShop(Location location) {
+    public void addLocation(Location location) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();

@@ -6,33 +6,44 @@ package com.vanarragon.ben.locationapp.Fragments;
 
 import android.Manifest;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
-import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.vision.text.Text;
-import com.vanarragon.ben.locationapp.Interfaces.FragmentInteraction;
+import com.vanarragon.ben.locationapp.Database.DBHandler;
+import android.location.Location;
+
 import com.vanarragon.ben.locationapp.R;
 
 import java.io.IOException;
@@ -59,7 +70,14 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
     private TextView lblLocation;
     private TextView lblDate;
-    private Button btnShowLocation, btnStartLocationUpdates;
+    private EditText activityTextBox;
+    private Button btnShowLocation, btnStartLocationUpdates, btnSaveLocation;
+    private RadioGroup rg;
+    private RadioButton rb, rbDefault;
+
+    //variables for saving to the database
+    private Double currentLat, currentLong;
+    private String  currentActivity,currentDateTime, currentPrivacyLevel;
 
     //permissions stuff
     private static final int REQUEST_FINE_LOCATION=0;
@@ -99,6 +117,11 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
         btnShowLocation = (Button) myView.findViewById(R.id.btnShowLocation);
         btnStartLocationUpdates = (Button) myView.findViewById(R.id.btnStartLocationUpdates);
+        btnSaveLocation = (Button) myView.findViewById(R.id.btnSave);
+        activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
+        rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
+        rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
+        rbDefault.setChecked(true);//sets the default radio button to avoid getting a reference on null object later
 
         if(checkPlayServices()){
             buildGoogleApiClient();
@@ -117,6 +140,43 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                 togglePeriodicLocationUpdates();
             }
         }));
+
+        //SAVES THE RECORD
+        btnSaveLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if(activityTextBox.getText() != null) {
+                    currentActivity = activityTextBox.getText().toString();
+                    Log.d("Current activity: ", currentActivity);
+                }
+
+
+
+                //http://stackoverflow.com/questions/18179124/android-getting-value-from-selected-radiobutton
+                int selectedId = rg.getCheckedRadioButtonId();
+
+
+
+                Log.d("Selected ID", String.valueOf(selectedId));
+                // find the radiobutton by returned id
+                rb = (RadioButton) rg.findViewById(selectedId);
+                String rbText = rb.getText().toString();
+                currentPrivacyLevel = rbText.toLowerCase();
+
+                //CALLS THE SAVE LOCATION METHOD AND INSERTS THE RECORD IN THE DATABASE
+                saveLocation(v);
+
+
+
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager .beginTransaction()
+                        .replace(R.id.content_frame
+                                ,   new SecondFragment())
+                        .commit();
+
+            }
+        });
 
         return myView;
     }
@@ -187,10 +247,15 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
 
         if(mLastLocation != null) {
-            double latitude = mLastLocation.getLatitude();
-            double longitude = mLastLocation.getLongitude();
+            Double latitude = mLastLocation.getLatitude();
+            Double longitude = mLastLocation.getLongitude();
+
+            //set variables to save to the database
+            currentLat = latitude;
+            currentLong = longitude;
 
             LatLng latLng = new LatLng(latitude, longitude);
+
             String address = getAddressFromLatLng(latLng);
             lblLocation.setText("Address: " + address);
 
@@ -202,6 +267,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         Calendar c = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
         String formattedDate = sdf.format(c.getTime());
+        currentDateTime = formattedDate;
         lblDate.setText("Current time: " + formattedDate);
 
 
@@ -229,9 +295,19 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
             address = geocoder
                     .getFromLocation(latlng.latitude, latlng.longitude,1)
                     .get(0);
+
+           /* if(address.getAddressLine(0) != null) {
+                strAddress = address.getAddressLine(0);
+            }else if(address.getAddressLine(1) != null) {
+                strAddress += ", " +address.getAddressLine(1);
+            }else if(address.getAddressLine(2) != null) {
+                strAddress += ", " +address.getAddressLine(2);
+            }*/
+
             strAddress = address.getAddressLine(0) +
-                    ", " + address.getAddressLine(1) +
-                    ", " + address.getAddressLine(2);
+                    ", "  +address.getAddressLine(1) +
+                    ", " +address.getAddressLine(2);
+
         }
         catch (IOException e){
 
@@ -351,5 +427,75 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         }
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+    }
+
+    public void saveLocation(View view){
+        //set up a new db handler
+        DBHandler db = new DBHandler(getActivity());
+        db.getWritableDatabase();
+
+        if(currentLat != null && currentLong != null) {
+            if(currentActivity != null && !currentActivity.isEmpty() && !currentActivity.equals("null")){
+                if(currentDateTime != null) {
+                    //SAVES THE RECORD TO THE DATABASE
+                    db.addLocation(new com.vanarragon.ben.locationapp.Database.Location(currentLat, currentLong, currentActivity, currentDateTime, currentPrivacyLevel));
+                    Snackbar snackbar = Snackbar
+                            .make(view, "Successfully Added!", Snackbar.LENGTH_SHORT);
+                    snackbar.show();
+                }else{//datetime is null
+                Snackbar snackbar = Snackbar
+                        .make(view, "Error, please restart app", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+                }
+            }else {//if activity is null
+                Log.d("Current activity 2: ", currentActivity);
+                Snackbar snackbar = Snackbar
+                        .make(view, "Please type in an Activity", Snackbar.LENGTH_SHORT);
+                snackbar.show();
+
+                //request focus on the actiivty textbox
+                activityTextBox.requestFocus();
+                //http://stackoverflow.com/questions/3072173/how-to-call-a-method-after-a-delay-in-android
+                final Handler handler = new Handler();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        //Do something after 100ms
+
+                        //open keyboard in edit textbox with focus
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(activityTextBox, InputMethodManager.SHOW_IMPLICIT);
+                    }
+                }, 2000);
+            }
+
+
+        }else{//if lat or long is null
+            Snackbar snackbar = Snackbar
+                    .make(view, "Please enable your location services", Snackbar.LENGTH_SHORT)
+                    .setAction("SETTINGS", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+                        }
+                    });
+
+            snackbar.show();
+
+
+
+        }
+
+
+
+        //Cursor cursor = db.getRecentLocations();
+        //String[] locationsFields = new String[]{DBHandler.KEY_LAT,  DBHandler.KEY_LONG ,  DBHandler.KEY_ACTION , DBHandler.KEY_DATETIME};
+        //int[] toTextViews = new int[]{R.id.textViewLat,R.id.textViewLong,R.id.textViewAction,R.id.textViewDateTime};
+        //SimpleCursorAdapter myCursorAdapter;
+        //myCursorAdapter = new SimpleCursorAdapter(getActivity(),R.layout.location_layout,cursor,locationsFields,toTextViews,0);
+
+        //grb listview from activity
+        //listView = (ListView) myView.findViewById(R.id.listView2);
+        //listView.setAdapter(myCursorAdapter);
     }
 }

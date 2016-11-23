@@ -77,7 +77,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
     //variables for saving to the database
     private Double currentLat, currentLong;
-    private String  currentActivity,currentDateTime, currentPrivacyLevel;
+    private String  currentActivity,currentDateTime, currentPrivacyLevel, currentSimpleLocation;
 
     //permissions stuff
     private static final int REQUEST_FINE_LOCATION=0;
@@ -165,15 +165,15 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                 currentPrivacyLevel = rbText.toLowerCase();
 
                 //CALLS THE SAVE LOCATION METHOD AND INSERTS THE RECORD IN THE DATABASE
-                saveLocation(v);
+                boolean saved = saveLocation(v);
 
-
-
-                FragmentManager fragmentManager = getFragmentManager();
-                fragmentManager .beginTransaction()
-                        .replace(R.id.content_frame
-                                ,   new SecondFragment())
-                        .commit();
+                if(saved) {
+                    FragmentManager fragmentManager = getFragmentManager();
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.content_frame
+                                    , new HomeFragment())
+                            .commit();
+                }
 
             }
         });
@@ -197,9 +197,21 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // granted
+                    displayLocation();
                 }
                 else{
-                    // no granted
+                    // not granted
+                    /*Snackbar snackbar = Snackbar
+                            .make(view, "Please enable your location services", Snackbar.LENGTH_LONG)
+                            .setAction("SETTINGS", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+                                }
+                            });
+                    snackbar.show();*/
+
+
                 }
                 return;
             }
@@ -307,6 +319,9 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
             strAddress = address.getAddressLine(0) +
                     ", "  +address.getAddressLine(1) +
                     ", " +address.getAddressLine(2);
+
+
+            currentSimpleLocation = address.getAddressLine(0);
 
         }
         catch (IOException e){
@@ -429,7 +444,10 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
     }
 
-    public void saveLocation(View view){
+    public boolean saveLocation(View view){
+        //flag for successful save
+        boolean saved = false;
+
         //set up a new db handler
         DBHandler db = new DBHandler(getActivity());
         db.getWritableDatabase();
@@ -437,18 +455,30 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         if(currentLat != null && currentLong != null) {
             if(currentActivity != null && !currentActivity.isEmpty() && !currentActivity.equals("null")){
                 if(currentDateTime != null) {
-                    //SAVES THE RECORD TO THE DATABASE
-                    db.addLocation(new com.vanarragon.ben.locationapp.Database.Location(currentLat, currentLong, currentActivity, currentDateTime, currentPrivacyLevel));
-                    Snackbar snackbar = Snackbar
-                            .make(view, "Successfully Added!", Snackbar.LENGTH_SHORT);
-                    snackbar.show();
-                }else{//datetime is null
+                    if(currentSimpleLocation !=null) {
+                        //SAVES THE RECORD TO THE DATABASE
+                        db.addLocation(new com.vanarragon.ben.locationapp.Database.Location(currentLat, currentLong, currentActivity, currentDateTime, currentPrivacyLevel, currentSimpleLocation));
+                        saved = true;
+                        Snackbar snackbar = Snackbar
+                                .make(view, "Successfully Added!", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }else{
+                        //simple location is null
+                        saved = false;
+                        Snackbar snackbar = Snackbar
+                                .make(view, "Error, please enable locations", Snackbar.LENGTH_SHORT);
+                        snackbar.show();
+                    }
+                }else{
+                    //datetime is null
+                    saved = false;
                 Snackbar snackbar = Snackbar
                         .make(view, "Error, please restart app", Snackbar.LENGTH_SHORT);
                 snackbar.show();
                 }
-            }else {//if activity is null
-                Log.d("Current activity 2: ", currentActivity);
+            }else {
+                //if activity is null
+                saved = false;//marker set to false
                 Snackbar snackbar = Snackbar
                         .make(view, "Please type in an Activity", Snackbar.LENGTH_SHORT);
                 snackbar.show();
@@ -460,42 +490,24 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        //Do something after 100ms
-
-                        //open keyboard in edit textbox with focus
+                        //open keyboard in activityTextBox after 2 seconds
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.showSoftInput(activityTextBox, InputMethodManager.SHOW_IMPLICIT);
                     }
                 }, 2000);
             }
-
-
         }else{//if lat or long is null
+            saved = false;
             Snackbar snackbar = Snackbar
-                    .make(view, "Please enable your location services", Snackbar.LENGTH_SHORT)
+                    .make(view, "Please enable your location services", Snackbar.LENGTH_LONG)
                     .setAction("SETTINGS", new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
                         }
                     });
-
             snackbar.show();
-
-
-
         }
-
-
-
-        //Cursor cursor = db.getRecentLocations();
-        //String[] locationsFields = new String[]{DBHandler.KEY_LAT,  DBHandler.KEY_LONG ,  DBHandler.KEY_ACTION , DBHandler.KEY_DATETIME};
-        //int[] toTextViews = new int[]{R.id.textViewLat,R.id.textViewLong,R.id.textViewAction,R.id.textViewDateTime};
-        //SimpleCursorAdapter myCursorAdapter;
-        //myCursorAdapter = new SimpleCursorAdapter(getActivity(),R.layout.location_layout,cursor,locationsFields,toTextViews,0);
-
-        //grb listview from activity
-        //listView = (ListView) myView.findViewById(R.id.listView2);
-        //listView.setAdapter(myCursorAdapter);
+        return saved;
     }
 }

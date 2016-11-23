@@ -31,13 +31,15 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String KEY_ACTION = "action";
     public static final String KEY_DATETIME = "datetime";
     public static final String KEY_PRIVACYLEVEL = "privacylevel";
-    public static final String[] ALL_KEYS = new String[]{KEY_ID,KEY_LAT,KEY_LONG,KEY_ACTION,KEY_DATETIME,KEY_PRIVACYLEVEL};
+    public static final String KEY_SIMPLELOCATION = "simplelocation";
+    public static final String[] ALL_KEYS = new String[]{KEY_ID,KEY_LAT,KEY_LONG,KEY_ACTION,KEY_DATETIME,KEY_PRIVACYLEVEL, KEY_SIMPLELOCATION};
 
     private String latString = "";
     private String longString = "";
     private String actionString = "";
     private String dateTimeString = "";
     private String privacyLevelString = "";
+    private String simplelocationString = "";
 
 
 
@@ -56,7 +58,8 @@ public class DBHandler extends SQLiteOpenHelper {
         + KEY_LONG +  " TEXT, "
         + KEY_ACTION + " TEXT, "
         + KEY_DATETIME +  " TEXT, "
-        + KEY_PRIVACYLEVEL + " TEXT"
+        + KEY_PRIVACYLEVEL + " TEXT, "
+        + KEY_SIMPLELOCATION + " TEXT"
         + ")";
 
         Log.d("log on create:", CREATE_LOCATIONS_TABLE);
@@ -78,7 +81,7 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-
+        values.put(KEY_SIMPLELOCATION, location.getSimpleLocation());//location
         values.put(KEY_PRIVACYLEVEL, location.getPrivacyLevel()); // Shop Name
         values.put(KEY_DATETIME, location.getDateTime()); // Shop Phone Number
         values.put(KEY_ACTION, location.getAction()); // Shop Name
@@ -104,7 +107,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_LONG,
                 KEY_ACTION,
                 KEY_DATETIME,
-                KEY_PRIVACYLEVEL}, KEY_ID + "=?",
+                KEY_PRIVACYLEVEL,
+                KEY_SIMPLELOCATION}, KEY_ID + "=?",
         new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -116,7 +120,8 @@ public class DBHandler extends SQLiteOpenHelper {
                 Double.parseDouble(cursor.getString(2)),
                 String.valueOf(cursor.getString(3)),
                 String.valueOf(cursor.getString(4)),
-                String.valueOf(cursor.getString(5)));
+                String.valueOf(cursor.getString(5)),
+                String.valueOf(cursor.getString(6)));
         // return shop
         return location;
     }
@@ -210,6 +215,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(KEY_ACTION, location.getAction());
         values.put(KEY_DATETIME, location.getDateTime());
         values.put(KEY_PRIVACYLEVEL, location.getPrivacyLevel());
+        values.put(KEY_SIMPLELOCATION, location.getSimpleLocation());
 
 // updating row
         return db.update(TABLE_LOCATIONS, values, KEY_ID + " = ?",

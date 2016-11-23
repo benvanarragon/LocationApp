@@ -18,6 +18,7 @@ public class Location {
         private String Action;
         private String DateTime;
         private String PrivacyLevel;
+        private String SimpleLocation;
 
 
 
@@ -26,7 +27,7 @@ public class Location {
         {
 
         }
-        public Location(double Lat,double Long, String Action, String DateTime, String PrivacyLevel)
+        public Location(double Lat,double Long, String Action, String DateTime, String PrivacyLevel, String SimpleLocation)
         {
             //this.id=id;
             this.Lat=Lat;
@@ -34,7 +35,16 @@ public class Location {
             this.Action = Action;
             this.DateTime = DateTime;
             this.PrivacyLevel = PrivacyLevel;
+            this.SimpleLocation = SimpleLocation;
         }
+
+    public String getSimpleLocation() {
+        return SimpleLocation;
+    }
+
+    public void setSimpleLocation(String simpleLocation) {
+        SimpleLocation = simpleLocation;
+    }
 
     public int getId() {
         return id;

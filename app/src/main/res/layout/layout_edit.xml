@@ -5,132 +5,81 @@
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:background="@color/secondaryColor">
-
-    <TextView
-        android:text="Update Location"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="25dp"
-        android:id="@+id/textView2"
-        android:textSize="25dp"
-        android:textColor="@color/accentColor"
-        android:textStyle="bold"/>
-    <TextView
-
-        android:id="@+id/lblLocation"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
-        android:textSize="16dp"/>
-    <TextView
-
-        android:id="@+id/lblDate"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
-        android:textSize="16dp"/>
-
-    <TextView
-        android:text="@string/lbl_Action"
-        android:id="@+id/lblAction"
-        android:padding="15dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/primaryColor"
-        android:textSize="25dp"
-        android:textStyle="bold"/>
-
-    <EditText
-        android:id="@+id/activityTextBox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/action_hint"
-        android:inputType="text"
-        android:textColorHint="@color/accentColor"
-        android:textColor="@color/primaryColor"
-        android:textSize="25dp"
-        android:maxLength="20"
-        android:background="@android:color/transparent"/>
-
-
-
-    <RadioGroup
-        android:id="@+id/rgPrivacy"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal"
-        android:gravity="center_horizontal"
-        android:theme="@style/BlueCheck"
-        android:background="@color/transparent">
-        <RadioButton
-            android:id="@+id/rb_private"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/BlueCheck"
-            android:text="@string/chkBox_private"
-            android:textColor="@color/primaryColor"
-            android:buttonTint="@color/primaryColor"
-            android:layout_marginRight="50dp"/>
-        <RadioButton
-            android:id="@+id/rb_public"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/BlueCheck"
-            android:text="@string/chkBox_public"
-            android:textColor="@color/primaryColor"
-            android:buttonTint="@color/primaryColor"
-            android:layout_marginRight="50dp"/>
-        <RadioButton
-            android:id="@+id/rb_friends"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:theme="@style/BlueCheck"
-            android:text="@string/chkBox_friends"
-            android:textColor="@color/primaryColor"
-            android:buttonTint="@color/primaryColor"/>
-    </RadioGroup>
-
     <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:orientation="horizontal"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+
+        android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:background="@color/transparent">
+        android:id="@+id/Top_half_layout"
+        android:background="@color/secondaryColor">
 
-        <Button
-            android:id="@+id/btnStartLocationUpdates"
+        <EditText
+            android:id="@+id/activityTextBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/tertiaryColor"
-            android:layout_marginRight="20dp"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/btn_start_location_updates"
+            android:hint="@string/action_hint"
+            android:inputType="text"
+            android:textColorHint="@color/accentColor"
             android:textColor="@color/accentColor"
+            android:textSize="45dp"
+            android:maxLength="20"
+            android:background="@android:color/transparent"
+            android:layout_centerHorizontal="true"/>
 
-            />
-        <Button
-            android:id="@+id/btnShowLocation"
+        <TextView
+
+            android:id="@+id/lblLocation"
+            android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/tertiaryColor"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp"
-            android:text="@string/btn_get_location"
             android:textColor="@color/accentColor"
+            android:textSize="15dp"
+            android:layout_above="@+id/lblDate"
+            android:layout_centerHorizontal="true" />
 
-            />
+        <TextView
+
+            android:id="@+id/lblDate"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="49dp"
+            android:textColor="@color/accentColor"
+            android:textSize="15dp"
+            android:layout_centerHorizontal="true"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnSave"
+            android:background="@color/tertiaryColor"
+            android:text="@string/btnSaveText"
+            android:textColor="@color/accentColor"
+            android:layout_marginBottom="45dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true" />
+
+
+        // Your Codes
+
     </LinearLayout>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:id="@+id/btnSave"
-        android:background="@color/tertiaryColor"
-        android:text="@string/btnSaveText"
-        android:textColor="@color/accentColor"/>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2"
+
+            android:orientation="vertical"
+            android:id="@+id/bottom_half_layout"
+            android:background="@color/accentColor">
+        <fragment
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            class="com.google.android.gms.maps.MapFragment" />
+
+    </LinearLayout>
+
 </LinearLayout>

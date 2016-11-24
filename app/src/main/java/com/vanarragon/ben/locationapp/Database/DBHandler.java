@@ -25,6 +25,7 @@ public class DBHandler extends SQLiteOpenHelper {
     // Contacts table name
     private static final String TABLE_LOCATIONS = "locationsTable";
     // Shops Table Columns names
+    //DATABASE STEP
     public static final String KEY_ID = "_id";
     public static final String KEY_LAT = "lat";
     public static final String KEY_LONG = "long";
@@ -32,7 +33,12 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String KEY_DATETIME = "datetime";
     public static final String KEY_PRIVACYLEVEL = "privacylevel";
     public static final String KEY_SIMPLELOCATION = "simplelocation";
-    public static final String[] ALL_KEYS = new String[]{KEY_ID,KEY_LAT,KEY_LONG,KEY_ACTION,KEY_DATETIME,KEY_PRIVACYLEVEL, KEY_SIMPLELOCATION};
+    public static final String KEY_EMAIL = "email";
+    public static final String KEY_NAME = "name";
+    public static final String KEY_PROFILEPIC = "profilepic";
+
+    //DATABASE STEP
+    public static final String[] ALL_KEYS = new String[]{KEY_ID,KEY_LAT,KEY_LONG,KEY_ACTION,KEY_DATETIME,KEY_PRIVACYLEVEL, KEY_SIMPLELOCATION,KEY_EMAIL, KEY_NAME, KEY_PROFILEPIC};
 
     private String latString = "";
     private String longString = "";
@@ -50,6 +56,7 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    //DATABASE STEP
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_LOCATIONS_TABLE = "CREATE TABLE " + TABLE_LOCATIONS + "("
@@ -59,7 +66,10 @@ public class DBHandler extends SQLiteOpenHelper {
         + KEY_ACTION + " TEXT, "
         + KEY_DATETIME +  " TEXT, "
         + KEY_PRIVACYLEVEL + " TEXT, "
-        + KEY_SIMPLELOCATION + " TEXT"
+        + KEY_SIMPLELOCATION + " TEXT, "
+                + KEY_EMAIL + " TEXT, "
+                + KEY_NAME + " TEXT, "
+                + KEY_PROFILEPIC + " BLOB"
         + ")";
 
         Log.d("log on create:", CREATE_LOCATIONS_TABLE);
@@ -81,6 +91,9 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(KEY_PROFILEPIC, location.getProfilePic());//location
+        values.put(KEY_NAME, location.getName());//location
+        values.put(KEY_EMAIL, location.getEmail());//location
         values.put(KEY_SIMPLELOCATION, location.getSimpleLocation());//location
         values.put(KEY_PRIVACYLEVEL, location.getPrivacyLevel()); // Shop Name
         values.put(KEY_DATETIME, location.getDateTime()); // Shop Phone Number
@@ -108,7 +121,10 @@ public class DBHandler extends SQLiteOpenHelper {
                 KEY_ACTION,
                 KEY_DATETIME,
                 KEY_PRIVACYLEVEL,
-                KEY_SIMPLELOCATION}, KEY_ID + "=?",
+                KEY_SIMPLELOCATION,
+                KEY_EMAIL,
+                KEY_NAME,
+                KEY_PROFILEPIC}, KEY_ID + "=?",
         new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -121,7 +137,10 @@ public class DBHandler extends SQLiteOpenHelper {
                 String.valueOf(cursor.getString(3)),
                 String.valueOf(cursor.getString(4)),
                 String.valueOf(cursor.getString(5)),
-                String.valueOf(cursor.getString(6)));
+                String.valueOf(cursor.getString(6)),
+                String.valueOf(cursor.getString(7)),
+                String.valueOf(cursor.getString(8)),
+                cursor.getBlob(9));
         // return shop
         return location;
     }

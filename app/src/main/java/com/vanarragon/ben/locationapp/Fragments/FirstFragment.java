@@ -41,9 +41,11 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.vanarragon.ben.locationapp.Activities.Base;
 import com.vanarragon.ben.locationapp.Database.DBHandler;
 import android.location.Location;
 
+import com.vanarragon.ben.locationapp.Database.DbBitmapUtility;
 import com.vanarragon.ben.locationapp.R;
 
 import java.io.IOException;
@@ -457,7 +459,8 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                 if(currentDateTime != null) {
                     if(currentSimpleLocation !=null) {
                         //SAVES THE RECORD TO THE DATABASE
-                        db.addLocation(new com.vanarragon.ben.locationapp.Database.Location(currentLat, currentLong, currentActivity, currentDateTime, currentPrivacyLevel, currentSimpleLocation));
+                        byte[] googlePhoto = DbBitmapUtility.getBytes(Base.googlePhoto);
+                        db.addLocation(new com.vanarragon.ben.locationapp.Database.Location(currentLat, currentLong, currentActivity, currentDateTime, currentPrivacyLevel, currentSimpleLocation, Base.googleMail,Base.googleName,googlePhoto));
                         saved = true;
                         Snackbar snackbar = Snackbar
                                 .make(view, "Successfully Added!", Snackbar.LENGTH_SHORT);

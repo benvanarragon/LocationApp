@@ -6,6 +6,7 @@ package com.vanarragon.ben.locationapp.Fragments;
 
 import android.app.Fragment;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.renderscript.Double2;
@@ -18,11 +19,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -39,13 +42,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.vanarragon.ben.locationapp.Database.DbBitmapUtility;
 import com.vanarragon.ben.locationapp.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class EditFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener {
-    String id,lat,longString,action,date,privacy,simpleLoc;
+    String id,lat,longString,action,date,privacy,simpleLoc,name,email;
+    byte[] profilePic;
     View myView;
     private TextView tvTest;
 
@@ -55,6 +60,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     private EditText activityTextBox;
     private RadioGroup rg;
     private RadioButton rb, rbDefault;
+    private ImageView iv;
 
     @Nullable
     @Override
@@ -66,6 +72,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
         activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
         rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
         rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
+        iv = (ImageView)myView.findViewById(R.id.imgProfilePicture);
 
 
 
@@ -75,7 +82,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
             buildGoogleApiClient();
         }
 
-
+        //DATABASE STEP
         Bundle args = getArguments();
         if (args == null) {
             Toast.makeText(getActivity(), "arguments is null " , Toast.LENGTH_LONG).show();
@@ -88,15 +95,18 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
             date = args.getString("date");
             privacy = args.getString("privacy");
             simpleLoc = args.getString("simpleLoc");
+            email = args.getString("email");
+            name = args.getString("name");
+            profilePic = args.getByteArray("profilepic");
             //Toast.makeText(getActivity(), "text: " + id , Toast.LENGTH_LONG).show();
 
+            //convert profilePic from bytearray to bitmap
+            Bitmap profilePicture = DbBitmapUtility.getImage(profilePic);
 
-            lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
-            activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
-            rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
-            rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
+
 
             lblLocation.setText(simpleLoc);
+            iv.setImageBitmap(profilePicture);
             lblDate.setText(date);
             activityTextBox.setText(action);
         }

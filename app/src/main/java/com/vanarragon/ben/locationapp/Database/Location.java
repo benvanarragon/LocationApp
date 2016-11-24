@@ -2,6 +2,8 @@
 
 package com.vanarragon.ben.locationapp.Database;
 
+import java.sql.Blob;
+
 import java.sql.Date;
 
 /**
@@ -19,7 +21,10 @@ public class Location {
         private String DateTime;
         private String PrivacyLevel;
         private String SimpleLocation;
+        private String email,name;
+        private byte[] profilePic;
 
+    //IF YOU ADD NEW COLUMNS, YOU MUST UN INSTALL THE APP AND RECREATE THE DATABASE
 
 
 
@@ -27,7 +32,7 @@ public class Location {
         {
 
         }
-        public Location(double Lat,double Long, String Action, String DateTime, String PrivacyLevel, String SimpleLocation)
+        public Location(double Lat,double Long, String Action, String DateTime, String PrivacyLevel, String SimpleLocation, String email, String name, byte[] profilePic)
         {
             //this.id=id;
             this.Lat=Lat;
@@ -36,7 +41,34 @@ public class Location {
             this.DateTime = DateTime;
             this.PrivacyLevel = PrivacyLevel;
             this.SimpleLocation = SimpleLocation;
+            this.email = email;
+            this.name = name;
+            this.profilePic = profilePic;
         }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public byte[] getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(byte[] profilePic) {
+        this.profilePic = profilePic;
+    }
 
     public String getSimpleLocation() {
         return SimpleLocation;

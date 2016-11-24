@@ -1,45 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
+    android:textAlignment="center"
     android:background="@color/view_bg">
 
 
     <TextView
         android:id="@+id/textViewAction"
-        android:layout_weight="1.3"
+        android:layout_weight="1.5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:textColor="@color/white"
         android:textStyle="bold"
-        android:gravity="left"
-        android:textSize="25dp"/>
+        android:gravity="center_vertical|left"
+        android:textSize="35sp"/>
+    <TextView
+        android:id="@+id/textViewDash2"
+        android:layout_weight="0.2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:gravity="center_vertical|center"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:text="-"/>
     <!-- users name -->
     <TextView
         android:id="@+id/textViewName"
         android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:textColor="@color/white"
-        android:gravity="right"
-        android:textSize="5dp"
+        android:gravity="center_vertical|left"
+        android:textSize="10sp"
         android:maxLines="2"
+        android:lines="2"
 
         />
+    <TextView
+        android:id="@+id/textViewDash1"
+        android:layout_weight="0.2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:gravity="center_vertical|center"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:text="-"/>
 
     <TextView
         android:id="@+id/textViewSimpleLocation"
         android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:textColor="@color/white"
-        android:gravity="right"
-        android:textSize="15dp"
-        android:maxLines="2"
+        android:gravity="center_vertical|left"
+        android:textSize="10sp"
+        android:maxLines="1"
+        android:lines="1"
 
         />
     <TextView
@@ -48,21 +71,21 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:padding="5dp"
-        android:gravity="center_horizontal"
+        android:gravity="center_vertical|center"
         android:textColor="@color/white"
-        android:textSize="15dp"
+        android:textSize="10sp"
         android:text="-"/>
 
     <TextView
         android:id="@+id/textViewDateTime"
-        android:layout_weight="1"
+        android:layout_weight="0.7"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:gravity="right"
-        android:maxLines="4"
+        android:gravity="center_vertical|right"
+        android:maxLines="2"
         android:lines="2"
         android:textColor="@color/white"
-        android:textSize="15dp"/>
+        android:textSize="10sp"
+        />
 
 </LinearLayout>

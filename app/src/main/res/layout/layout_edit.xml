@@ -25,6 +25,7 @@
             android:textColor="@color/accentColor"
             android:textSize="45dp"
             android:maxLength="20"
+            android:textAlignment="center"
             android:background="@android:color/transparent"
             android:layout_centerHorizontal="true"/>
 
@@ -39,10 +40,10 @@
             android:layout_above="@+id/lblDate"
             android:layout_centerHorizontal="true" />
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_centerHorizontal="true"
-            android:scaleType="center"
+            android:scaleType="fitXY"
             android:id="@+id/imgProfilePicture"/>
 
         <TextView

@@ -1,38 +1,51 @@
 package com.vanarragon.ben.locationapp.Activities;
 
+
+
+import com.android.volley.toolbox.ImageLoader;
+import com.vanarragon.ben.locationapp.R;
+
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.widget.TextView;
 
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
-import com.google.android.gms.plus.model.people.Person;
-import com.vanarragon.ben.locationapp.R;
+import com.google.android.gms.common.api.OptionalPendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import android.widget.Toast;
 
-/**
- * Created by jamin on 2016-11-23.
- */
-
+//DONT CALL ON STOP HERE IT BREAKS THE APPLICATION SO MUCH, SPENT 24 HOURS STRAIGHT TRYING TO FIX THAT STUPID BUG...
+//I WILL REMEMBER THIS NIGHT! UP UNTIL 9:30AM DEBUGGING, SLEPT IN UNTIL 6PM, AND SOLVED IT AT 9:00...that'll go down in my history
+//books for coding :( do not have an on stop callback...please...do not!
 public class Login extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
+    /* Request code used to invoke sign in
 
-    /* Request code used to invoke sign in user interactions. */
-    private static final int RC_SIGN_IN = 0;
-    private static final String TAG = "coffeemate";
+     user interactions. */
+
+
+
+    private static final String TAG = "SignInActivity";
+    private static final int RC_SIGN_IN = 9001;
     //permissions stuff
     private static final int PERMISSION_REQUEST_CODE=0;
 
@@ -42,160 +55,231 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
     /* Should we automatically resolve ConnectionResults when possible? */
     private boolean mShouldResolve = false;
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    //Image Loader
+    private ImageLoader imageLoader;
+    private GoogleApiClient mGoogleApiClient;
+    private TextView mStatusTextView;
+    private ProgressDialog mProgressDialog;
 
-        // Build GoogleApiClient with access to basic profile
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        // Views
+        mStatusTextView = (TextView) findViewById(R.id.status);
+
+        // Button listeners
+        findViewById(R.id.sign_in_button).setOnClickListener(this);
+        findViewById(R.id.sign_out_button).setOnClickListener(this);
+        findViewById(R.id.disconnect_button).setOnClickListener(this);
+
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        // [END configure_signin]
+
+        // [START build_client]
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
         Base.mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope(Scopes.PLUS_LOGIN))
-                .addScope(new Scope(Scopes.PLUS_ME))
-                .addScope(new Scope(Scopes.EMAIL))
+                /*.enableAutoManage(this *//* FragmentActivity *//*, this *//* OnConnectionFailedListener *//*)*/
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
+        // [END build_client]
 
-        setContentView(R.layout.activity_login);
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.disconnect_button).setOnClickListener(this);
+
+        
+        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setSize(SignInButton.SIZE_STANDARD);
+
 
         loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION,0);
         loadPermissions(Manifest.permission.READ_CONTACTS,123);
         loadPermissions(Manifest.permission.GET_ACCOUNTS,123);
+
+
     }
 
+
+
+
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
+        //connect to the api
         Base.mGoogleApiClient.connect();
+
+        OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(Base.mGoogleApiClient);
+        if (opr.isDone()) {
+            // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
+            // and the GoogleSignInResult will be available instantly.
+            Log.d(TAG, "Got cached sign-in");
+            GoogleSignInResult result = opr.get();
+            handleSignInResult(result);
+        } else {
+            // If the user has not previously signed in on this device or the sign-in has expired,
+            // this asynchronous branch will attempt to sign in the user silently.  Cross-device
+            // single sign-on will occur in this branch.
+            showProgressDialog();
+            opr.setResultCallback(new ResultCallback<GoogleSignInResult>() {
+                @Override
+                public void onResult(GoogleSignInResult googleSignInResult) {
+                    hideProgressDialog();
+                    handleSignInResult(googleSignInResult);
+                }
+            });
+        }
+
     }
+
+
+
+    // [START onActivityResult]
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+    // [END onActivityResult]
+
+
+    // [START handleSignInResult]
+    private void handleSignInResult(GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            GoogleSignInAccount acct = result.getSignInAccount();
+            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            //updateUI(true);
+
+
+            loadPermissions(Manifest.permission.GET_ACCOUNTS,PERMISSION_REQUEST_CODE);
+            if(!checkPermission())
+                requestPermission();
+            else{
+                Base.googleToken = acct.getIdToken();
+
+                //Base.signedIn = Base.mGoogleApiClient.isConnected();
+                Base.googleName = acct.getDisplayName();
+                Base.googleMail = acct.getEmail();
+                Base.googlePhotoURL = acct.getPhotoUrl().toString();
+                // Show a message to the user that we are signing in.
+                Toast.makeText(this, "Signing in " + Base.googleName, Toast.LENGTH_LONG).show();
+                startMainActivity();
+            }
+
+
+
+        } else {
+            // Signed out, show unauthenticated UI.
+            //Toast.makeText(this, "Error signing in.", Toast.LENGTH_LONG).show();
+            //updateUI(false);
+        }
+    }
+    // [END handleSignInResult]
+
+
+
+    // [START signIn]
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(Base.mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    // [END signIn]
+
+
+    // [START revokeAccess]
+    private void revokeAccess() {
+        Auth.GoogleSignInApi.revokeAccess(Base.mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // [START_EXCLUDE]
+                        updateUI(false);
+                        // [END_EXCLUDE]
+                    }
+                });
+    }
+    // [END revokeAccess]
 
     @Override
-    public void onClick(View v) {
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+    }
 
-        if (v.getId() == R.id.sign_in_button) {
-            onSignInClicked();
+    private void showProgressDialog() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new ProgressDialog(this);
+            mProgressDialog.setMessage(getString(R.string.loading));
+            mProgressDialog.setIndeterminate(true);
         }
 
-        if (v.getId() == R.id.disconnect_button)
-        {
-            if(Base.mGoogleApiClient.isConnected() && !Base.signedIn) {
-                Toast.makeText(this, "Disconencting Account....", Toast.LENGTH_SHORT).show();
-                Log.v(TAG,"Logging out from: " + Base.mGoogleApiClient);
-                Plus.AccountApi.clearDefaultAccount(Base.mGoogleApiClient);
-                Plus.AccountApi.revokeAccessAndDisconnect(Base.mGoogleApiClient);
-                Base.mGoogleApiClient.disconnect();
-                Base.googleToken = "";
-                Base.signedIn = Base.mGoogleApiClient.isConnected();
-                Log.v(TAG,"Signed In is: " + Base.signedIn);
-                Base.mGoogleApiClient.connect();
-            }
-            else
-                Toast.makeText(this, "No Account to Disconenct....", Toast.LENGTH_SHORT).show();
+        mProgressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.hide();
         }
     }
 
-    private void startHomeScreen() {
+    private void updateUI(boolean signedIn) {
+        if (signedIn) {
+            findViewById(R.id.sign_in_button).setVisibility(View.GONE);
+            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+        } else {
+            mStatusTextView.setText(R.string.signed_out);
+
+            findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
+            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+        }
+    }
+
+    //start main activity
+    private void startMainActivity() {
         Intent intent = new Intent(Login.this, MainActivity.class);
         Login.this.startActivity(intent);
     }
 
-    private void onSignInClicked() {
-        // User clicked the sign-in button, so begin the sign-in process and automatically
-        // attempt to resolve any errors that occur.
-        mShouldResolve = true;
-        Base.mGoogleApiClient.connect();
-        //mStatusTextView.setText(R.string.signing_in);
-        //startHomeScreen();
-        if(!Base.signedIn)
-            Toast.makeText(this, "Attempting to Sign in...", Toast.LENGTH_LONG).show();
-    }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.v(TAG, "onActivityResult:" + requestCode + ":" + resultCode + ":" + data);
-
-        if (requestCode == RC_SIGN_IN) {
-            // If the error resolution was not successful we should not resolve further.
-            if (resultCode != RESULT_OK) {
-                mShouldResolve = false;
-            }
-
-            mIsResolving = false;
-            Base.mGoogleApiClient.connect();
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.sign_in_button:
+                signIn();
+                break;
+            case R.id.sign_out_button:
+                //signOut();
+                break;
+            case R.id.disconnect_button:
+                revokeAccess();
+                break;
         }
     }
 
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // Could not connect to Google Play Services.  The user needs to select an account,
-        // grant permissions or resolve an error in order to sign in. Refer to the javadoc for
-        // ConnectionResult to see possible error codes.
-        Log.v(TAG, "onConnectionFailed:" + connectionResult);
 
-        if (!mIsResolving && mShouldResolve) {
-            if (connectionResult.hasResolution()) {
-                try {
-                    connectionResult.startResolutionForResult(this, RC_SIGN_IN);
-                    mIsResolving = true;
-                } catch (IntentSender.SendIntentException e) {
-                    Log.v(TAG, "Could not resolve ConnectionResult.", e);
-                    mIsResolving = false;
-                    Base.mGoogleApiClient.connect();
-                }
-            } else {
-                // Could not resolve the connection result, show the user an
-                // error dialog.
-                //showErrorDialog(connectionResult);
-                Toast.makeText(this, "Error Signing in to Google " + connectionResult, Toast.LENGTH_LONG).show();
-                Log.v(TAG, "ConnectionResult : " + connectionResult);
-            }
-        } else {
-            // Show the signed-out UI
-            //showSignedOutUI();
-            Base.signedIn = Base.mGoogleApiClient.isConnected();
-        }
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Base.signedIn = Base.mGoogleApiClient.isConnected();
+
+        Toast.makeText(this, "Connected: " + Base.signedIn, Toast.LENGTH_SHORT);
     }
 
     @Override
-    public void onConnected(Bundle bundle) {
-        // onConnected indicates that an account was selected on the device, that the selected
-        // account has granted any requested permissions to our app and that we were able to
-        // establish a service connection to Google Play services.
-        Log.v(TAG, "onConnected:" + bundle);
-        mShouldResolve = false;
+    public void onConnectionSuspended(int i) {
 
-        // Show the signed-in UI
-        //showSignedInUI();
-        if(!Base.signedIn) {
-            if (Plus.PeopleApi.getCurrentPerson(Base.mGoogleApiClient) != null) {
-                Person currentPerson = Plus.PeopleApi.getCurrentPerson(Base.mGoogleApiClient);
-                String personPhotoUrl = currentPerson.getImage().getUrl();
-                Base.googleName = currentPerson.getDisplayName();
-
-
-                // by default the profile url gives 50x50 px image only
-                // we can replace the value with whatever dimension we want by
-                // replacing sz=X
-                personPhotoUrl = personPhotoUrl.substring(0,
-                        personPhotoUrl.length() - 2)
-                        + 100;
-
-                Base.googlePhotoURL = personPhotoUrl;
-                Base.googleToken = currentPerson.getId();
-                Base.signedIn = Base.mGoogleApiClient.isConnected();
-
-                loadPermissions(Manifest.permission.GET_ACCOUNTS,PERMISSION_REQUEST_CODE);
-                if(!checkPermission())
-                    requestPermission();
-                else{
-                Base.googleMail = Plus.AccountApi.getAccountName(Base.mGoogleApiClient);
-                // Show a message to the user that we are signing in.
-                Toast.makeText(this, "Signing in " + Base.googleName, Toast.LENGTH_SHORT).show();
-                startHomeScreen();}
-            }
-        }
     }
 
     //https://ddrohan.github.io/mad-2016/topic04-google-services/talk-3-google-3/01.maps.pdf
@@ -204,7 +288,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
         return result == PackageManager.PERMISSION_GRANTED;
     }
 
-    //https://ddrohan.github.io/mad-2016/topic04-google-services/talk-3-google-3/01.maps.pdf
+    private void loadPermissions(String perm,int requestCode) {
+        if (ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, perm)) {
+                ActivityCompat.requestPermissions(this, new String[]{perm}, requestCode);
+            }
+        }
+    }
+
     private void requestPermission(){
         ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION},PERMISSION_REQUEST_CODE);
     }
@@ -226,19 +317,4 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
         }
 
     }
-
-    @Override
-    public void onConnectionSuspended(int cause) {
-        // TODO Auto-generated method stub
-
-    }
-
-    private void loadPermissions(String perm,int requestCode) {
-        if (ContextCompat.checkSelfPermission(this, perm) != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, perm)) {
-                ActivityCompat.requestPermissions(this, new String[]{perm}, requestCode);
-            }
-        }
-    }
-
 }

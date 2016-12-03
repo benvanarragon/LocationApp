@@ -2,26 +2,27 @@ package com.vanarragon.ben.locationapp.Activities;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.vanarragon.ben.locationapp.Main.LocationMainApp;
-import com.vanarragon.ben.locationapp.R;
-
-
-import com.google.android.gms.appdatasearch.GetRecentContextCall;
-import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.plus.Plus;
+import com.vanarragon.ben.locationapp.R;
+import com.google.android.gms.auth.api.Auth;
+
+
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.vanarragon.ben.locationapp.Volley.App;
 
 /**
  * Created by jamin on 2016-11-23.
@@ -29,7 +30,6 @@ import com.google.android.gms.plus.Plus;
 
 public class Base extends AppCompatActivity {
 
-    public static LocationMainApp	app = LocationMainApp.getInstance();
     private static final int REQUEST_FINE_LOCATION=0;
 
     /* Client used to interact with Google APIs. */
@@ -42,10 +42,12 @@ public class Base extends AppCompatActivity {
     public static Bitmap googlePhoto;
     public static ProgressDialog dialog;
     public static int drawerID = 0;
+    public static App app;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        app = LocationMainApp.getInstance();
+        //app = LocationMainApp.getInstance();
+        app = new App();
     }
 
     protected void goToActivity(Activity current,
@@ -95,26 +97,25 @@ public class Base extends AppCompatActivity {
     }
 
     public void logout(MenuItem item) {
-        Log.v("coffeemate","Logging out from: " + mGoogleApiClient);
 
-        Base.signedIn = mGoogleApiClient.isConnected();
-
+        /*Plus.AccountApi.clearDefaultAccount(Base.mGoogleApiClient);
+        Plus.AccountApi.revokeAccessAndDisconnect(Base.mGoogleApiClient);*/
         if (Base.signedIn) {
-            Log.v("coffeemate","Logging out from: " + mGoogleApiClient);
-            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-            mGoogleApiClient.disconnect();
-            Base.googleToken = "";
-            Base.signedIn = mGoogleApiClient.isConnected();
-            mGoogleApiClient.connect();
-            Log.v("coffeemate","googleClient Connected: " + Base.signedIn);
-            Toast.makeText(this, "Signing out of Google", Toast.LENGTH_LONG).show();
+            Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                    new ResultCallback<Status>() {
+                        @Override
+                        public void onResult(Status status) {
+                            mGoogleApiClient.disconnect();
+                            Base.googleToken = "";
+                            Base.signedIn = mGoogleApiClient.isConnected();
+                            //mGoogleApiClient.connect();
 
-            Log.v("coffeemate", "CoffeeMate App Terminated");
-        }
+                        }
+                    });
+            }
 
         startActivity(new Intent(Base.this, Login.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
     }
-
 
 }

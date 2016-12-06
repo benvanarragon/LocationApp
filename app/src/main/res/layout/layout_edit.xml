@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@color/secondaryColor">
+    android:background="@color/colorSecondary">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -13,7 +13,7 @@
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:id="@+id/Top_half_layout"
-        android:background="@color/secondaryColor">
+        android:background="@color/colorSecondary">
 
         <EditText
             android:id="@+id/activityTextBox"
@@ -21,8 +21,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/action_hint"
             android:inputType="text"
-            android:textColorHint="@color/accentColor"
-            android:textColor="@color/accentColor"
+            android:textColorHint="@color/colorAccent"
+            android:textColor="@color/colorAccent"
             android:textSize="45dp"
             android:maxLength="20"
             android:textAlignment="center"
@@ -35,7 +35,7 @@
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/accentColor"
+            android:textColor="@color/colorAccent"
             android:textSize="15dp"
             android:layout_above="@+id/lblDate"
             android:layout_centerHorizontal="true" />
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="49dp"
-            android:textColor="@color/accentColor"
+            android:textColor="@color/colorAccent"
             android:textSize="15dp"
             android:layout_centerHorizontal="true"/>
 
@@ -61,9 +61,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btnSave"
-            android:background="@color/tertiaryColor"
+            android:background="@color/btn_bg"
             android:text="@string/btnSaveText"
-            android:textColor="@color/accentColor"
+            android:textColor="@color/colorAccent"
             android:layout_marginBottom="45dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true" />
@@ -80,7 +80,7 @@
 
             android:orientation="vertical"
             android:id="@+id/bottom_half_layout"
-            android:background="@color/accentColor">
+            android:background="@color/colorAccent">
         <fragment
             android:id="@+id/map"
             android:layout_width="match_parent"

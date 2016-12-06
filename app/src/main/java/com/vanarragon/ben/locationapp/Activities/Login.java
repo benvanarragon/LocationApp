@@ -3,12 +3,16 @@ package com.vanarragon.ben.locationapp.Activities;
 
 
 import com.android.volley.toolbox.ImageLoader;
+import com.google.android.gms.location.LocationServices;
 import com.vanarragon.ben.locationapp.R;
 
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Location;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -31,6 +35,13 @@ import com.google.android.gms.common.api.Status;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import android.widget.Toast;
+import android.widget.VideoView;
+
+import java.io.File;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 //DONT CALL ON STOP HERE IT BREAKS THE APPLICATION SO MUCH, SPENT 24 HOURS STRAIGHT TRYING TO FIX THAT STUPID BUG...
 //I WILL REMEMBER THIS NIGHT! UP UNTIL 9:30AM DEBUGGING, SLEPT IN UNTIL 6PM, AND SOLVED IT AT 9:00...that'll go down in my history
@@ -61,19 +72,57 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
     private TextView mStatusTextView;
     private ProgressDialog mProgressDialog;
 
+    //video background
+    VideoView videoView;
+    ArrayList<Uri> uri = new ArrayList<Uri>();
+    File dir;
+
+
+/*    @Override
+    protected void onStop() {
+        super.onStop();
+        Base.mGoogleApiClient.disconnect();
+        Log.d("On Stop: ", " ye");
+    }*/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        videoView = (VideoView) findViewById(R.id.videoView);
+
+        //ADD ANY VIDEOS HERE, THEY WILL BE RANDOMLY SHOWN ON START THROUGH GET RANDOM () METHOD
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background2));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background3));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background4));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background5));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background6));
+        uri.add(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.video_background7));
+
+
+        //Video Loop
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            public void onCompletion(MediaPlayer mp) {
+                videoView.start(); //need to make transition seamless.
+            }
+        });
+
+        videoView.setDrawingCacheEnabled(true);
+        videoView.setVideoURI(getRandom(uri));
+        videoView.requestFocus();
+        videoView.start();
+
         // Views
-        mStatusTextView = (TextView) findViewById(R.id.status);
+        //mStatusTextView = (TextView) findViewById(R.id.status);
 
         // Button listeners
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
+        //findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.disconnect_button).setOnClickListener(this);
+
+
 
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -89,13 +138,14 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
                 .addOnConnectionFailedListener(this)
                 /*.enableAutoManage(this *//* FragmentActivity *//*, this *//* OnConnectionFailedListener *//*)*/
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .addApi(LocationServices.API)
                 .build();
         // [END build_client]
 
 
         
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
+        signInButton.setSize(SignInButton.SIZE_ICON_ONLY);
 
 
         loadPermissions(Manifest.permission.ACCESS_FINE_LOCATION,0);
@@ -105,8 +155,26 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
 
     }
 
+    //for picking random video background
+    public static Uri getRandom(List<Uri> uriArrayList) {
+        int rnd = new Random().nextInt(uriArrayList.size());
+        return uriArrayList.get(rnd);
+    }
 
 
+  /*  @Override
+    protected void onPause() {
+        super.onPause();
+    if (Base.mGoogleApiClient.isConnected()){
+        Base.mGoogleApiClient.disconnect();
+    }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Base.mGoogleApiClient.connect();
+    }*/
 
     @Override
     public void onStart() {
@@ -114,14 +182,15 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
         //connect to the api
         Base.mGoogleApiClient.connect();
 
+
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(Base.mGoogleApiClient);
-        if (opr.isDone()) {
+        /*if (opr.isDone()) {
             // If the user's cached credentials are valid, the OptionalPendingResult will be "done"
             // and the GoogleSignInResult will be available instantly.
             Log.d(TAG, "Got cached sign-in");
-            GoogleSignInResult result = opr.get();
-            handleSignInResult(result);
-        } else {
+            //GoogleSignInResult result = opr.get();
+            //handleSignInResult(result);
+        } else {*/
             // If the user has not previously signed in on this device or the sign-in has expired,
             // this asynchronous branch will attempt to sign in the user silently.  Cross-device
             // single sign-on will occur in this branch.
@@ -133,7 +202,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
                     handleSignInResult(googleSignInResult);
                 }
             });
-        }
+        //}
 
     }
 
@@ -159,7 +228,7 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
-            mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
+            //mStatusTextView.setText(getString(R.string.signed_in_fmt, acct.getDisplayName()));
             //updateUI(true);
 
 
@@ -169,7 +238,18 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
             else{
                 Base.googleToken = acct.getIdToken();
 
+                //Base.mGoogleApiClient.connect();
+                Log.d(TAG, "connected:" + Base.mGoogleApiClient.isConnected());
                 //Base.signedIn = Base.mGoogleApiClient.isConnected();
+                if(!checkPermission())
+                    requestPermission();
+                else {
+                    //sets the last location before any views are opened on the device, this is so it can compare the current location to other posts
+                    //in the list view that is auto generated
+                    Base.lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(Base.mGoogleApiClient);
+                }
+
+
                 Base.googleName = acct.getDisplayName();
                 Base.googleMail = acct.getEmail();
                 Base.googlePhotoURL = acct.getPhotoUrl().toString();
@@ -238,12 +318,12 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
     private void updateUI(boolean signedIn) {
         if (signedIn) {
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.VISIBLE);
         } else {
-            mStatusTextView.setText(R.string.signed_out);
+            //mStatusTextView.setText(R.string.signed_out);
 
             findViewById(R.id.sign_in_button).setVisibility(View.VISIBLE);
-            findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
+            //findViewById(R.id.sign_out_and_disconnect).setVisibility(View.GONE);
         }
     }
 
@@ -260,9 +340,9 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
             case R.id.sign_in_button:
                 signIn();
                 break;
-            case R.id.sign_out_button:
+            //case R.id.sign_out_button:
                 //signOut();
-                break;
+                //break;
             case R.id.disconnect_button:
                 revokeAccess();
                 break;
@@ -272,14 +352,24 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        Log.d("OnConnected:", " connected! BEN");
         Base.signedIn = Base.mGoogleApiClient.isConnected();
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},0);
+            }
+        }
+        Base.lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(Base.mGoogleApiClient);
+        Log.d(TAG, "connectedcallback:" + Base.mGoogleApiClient.isConnected());
+        Log.d(TAG, "location:" + Base.lastKnownLocation.getLatitude() + ", " + Base.lastKnownLocation.getLongitude());
 
-        Toast.makeText(this, "Connected: " + Base.signedIn, Toast.LENGTH_SHORT);
     }
+
+
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("df","");
     }
 
     //https://ddrohan.github.io/mad-2016/topic04-google-services/talk-3-google-3/01.maps.pdf
@@ -317,4 +407,6 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
         }
 
     }
+
+
 }

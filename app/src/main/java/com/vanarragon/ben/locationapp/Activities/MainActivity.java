@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
@@ -21,9 +22,10 @@ import android.widget.TextView;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
+import com.google.android.gms.location.LocationServices;
 import com.vanarragon.ben.locationapp.Volley.App;
 import com.vanarragon.ben.locationapp.Volley.VolleySingleton;
-import com.vanarragon.ben.locationapp.Database.Location;
+
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -93,13 +95,13 @@ public class MainActivity extends Base
         String formattedDate = sdf.format(c.getTime());
 
 
-
+        //SEEDING
         //set up a new db handler
-        DBHandler db = new DBHandler(this);
+        /*DBHandler db = new DBHandler(this);
 
         db.getWritableDatabase();
         Log.d("writeable obtained",":");
-
+*/
         // Inserting Shop/Rows
         /*Log.d("Insert: ", "Inserting ..");
         db.addLocation(new Location(52.245,-7.138,"Hockey",formattedDate,"friends", "Ireland"));
@@ -109,7 +111,7 @@ public class MainActivity extends Base
         db.addLocation(new Location(52.645,-7.538,"Hockey5",formattedDate,"public", "Ireland"));*/
 
         // Reading all shops
-        Log.d("Reading: ", "Reading all shops..");
+        /*Log.d("Reading: ", "Reading all shops..");
         List<Location> locations = db.getAllLocations();
 
         for (Location location : locations) {
@@ -125,10 +127,13 @@ public class MainActivity extends Base
             Log.d("Location: : ", log);
         }
         //close the database
-        db.close();
+        db.close();*/
 
         //set default action bar title
         getSupportActionBar().setTitle("Home");
+
+
+
 
         //create a new fragment transaction object
 
@@ -244,6 +249,8 @@ public class MainActivity extends Base
 
         VolleySingleton.getmInstance(Base.app.getContext()).addToRequestQueue(imgRequest);
     }
+
+
 
 
 

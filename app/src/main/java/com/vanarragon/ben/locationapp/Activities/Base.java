@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -43,10 +44,12 @@ public class Base extends AppCompatActivity {
     public static ProgressDialog dialog;
     public static int drawerID = 0;
     public static App app;
+    public static Location lastKnownLocation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //app = LocationMainApp.getInstance();
+
         app = new App();
     }
 

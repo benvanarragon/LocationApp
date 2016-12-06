@@ -444,7 +444,9 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         }
 
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        Base.lastKnownLocation = mLastLocation;
     }
+
 
     public boolean saveLocation(View view){
         //flag for successful save
@@ -469,7 +471,13 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
                         //simple location is null
                         saved = false;
                         Snackbar snackbar = Snackbar
-                                .make(view, "Error, please enable locations", Snackbar.LENGTH_SHORT);
+                                .make(view, "Please enable your location services", Snackbar.LENGTH_LONG)
+                                .setAction("SETTINGS", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        startActivityForResult(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS), 0);
+                                    }
+                                });
                         snackbar.show();
                     }
                 }else{

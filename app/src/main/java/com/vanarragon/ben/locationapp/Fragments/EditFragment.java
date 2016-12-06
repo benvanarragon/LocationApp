@@ -42,6 +42,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.vanarragon.ben.locationapp.Activities.Base;
 import com.vanarragon.ben.locationapp.Database.DbBitmapUtility;
 import com.vanarragon.ben.locationapp.R;
 
@@ -102,6 +103,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
 
             //convert profilePic from bytearray to bitmap
             Bitmap profilePicture = DbBitmapUtility.getImage(profilePic);
+
 
 
 
@@ -274,6 +276,8 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
             requestPermission();
         else {
             Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Base.lastKnownLocation = mLastLocation;
+
 
             if (mLastLocation != null) {
                 //place marker at current position
@@ -288,9 +292,9 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
 
 
             mLocationRequest = new LocationRequest();
-            mLocationRequest.setInterval(500); //half second
-            mLocationRequest.setFastestInterval(250); //3 seconds
-            mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+            mLocationRequest.setInterval(60000); //60 second
+            mLocationRequest.setFastestInterval(30000); //3 seconds
+            mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
             //mLocationRequest.setSmallestDisplacement(0.1F); //1/10 meter
 
             LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
@@ -324,7 +328,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     @Override
     public void onLocationChanged(Location location) {
 
-
+        Base.lastKnownLocation = location;
         String distance = getDistanceBetween(location, lat, longString);
 
         //place marker at current position

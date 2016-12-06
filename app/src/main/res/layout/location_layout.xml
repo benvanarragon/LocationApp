@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
@@ -7,18 +8,54 @@
     android:layout_gravity="center_vertical"
     android:gravity="center_vertical"
     android:textAlignment="center"
-    android:background="@color/view_bg">
+    android:background="@color/transparent">
+
+    <!-- https://github.com/vinc3m1/RoundedImageView -->
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+
+            android:id="@+id/profilePic"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="5dp"
+
+        android:scaleType="fitCenter"
+        app:riv_corner_radius="35dip"
+        app:riv_border_width="1dip"
+        app:riv_border_color="#333333"
+        app:riv_mutate_background="true"
+        app:riv_oval="true"
+       />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
 
 
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="35sp"
+            android:fontFamily="sans-serif-light"
+            android:textStyle="bold"
+            android:text="|"
+            />
+    </LinearLayout>
     <TextView
         android:id="@+id/textViewAction"
         android:layout_weight="1.5"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:textStyle="bold"
+        android:textColor="@color/black"
         android:gravity="center_vertical|left"
-        android:textSize="35sp"/>
+        android:textSize="35sp"
+        android:fontFamily="sans-serif-light"
+        android:textStyle="bold"/>
     <TextView
         android:id="@+id/textViewDash2"
         android:layout_weight="0.2"
@@ -26,20 +63,23 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:gravity="center_vertical|center"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="10sp"
-        android:text="-"/>
+        android:text="-"
+        android:fontFamily="sans-serif-thin"
+        />
     <!-- users name -->
     <TextView
         android:id="@+id/textViewName"
         android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:gravity="center_vertical|left"
         android:textSize="10sp"
         android:maxLines="2"
         android:lines="2"
+        android:fontFamily="sans-serif-thin"
 
         />
     <TextView
@@ -49,20 +89,23 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:gravity="center_vertical|center"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="10sp"
-        android:text="-"/>
+        android:text="-"
+        android:fontFamily="sans-serif-thin"
+        />
 
     <TextView
         android:id="@+id/textViewSimpleLocation"
         android:layout_weight="0.8"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:gravity="center_vertical|left"
         android:textSize="10sp"
         android:maxLines="1"
         android:lines="1"
+        android:fontFamily="sans-serif-thin"
 
         />
     <TextView
@@ -72,9 +115,11 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:gravity="center_vertical|center"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="10sp"
-        android:text="-"/>
+        android:text="-"
+        android:fontFamily="sans-serif-thin"
+        />
 
     <TextView
         android:id="@+id/textViewDateTime"
@@ -84,8 +129,9 @@
         android:gravity="center_vertical|right"
         android:maxLines="2"
         android:lines="2"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="10sp"
+        android:fontFamily="sans-serif-thin"
         />
 
 </LinearLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.provider.Settings;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,28 +36,54 @@ public class CustomCursorAdapter extends CursorAdapter {
 
     String timeAgo;
 
+    //http://stackoverflow.com/questions/12223293/cursoradapter-bindview-optimization
+    //OPTIMIZATION
+    static class ViewHolder {
+        ImageView imageViewProfilePic;
+        TextView textViewAction;
+        TextView textViewName;
+        TextView textViewSimpleLocation;
+        TextView textViewDateTime;
+
+    }
+
+
+
     //default constructor
-    public CustomCursorAdapter(Context context, Cursor cursor) {
-        super(context, cursor, 0);
+    public CustomCursorAdapter(Context context, Cursor cursor){
+            super(context, cursor, 0);
+
+
+
     }
 
     // The newView method is used to inflate a new view and return it,
     // you don't bind any data to the view at this point.
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        return LayoutInflater.from(context).inflate(R.layout.location_layout, parent, false);
+        //OPTIMIZATION - http://stackoverflow.com/questions/12223293/cursoradapter-bindview-optimization
+        View view = LayoutInflater.from(context).inflate(R.layout.location_layout, parent, false);
+        ViewHolder holder = new ViewHolder();
+        // Find fields to populate in inflated template
+        holder.imageViewProfilePic = (ImageView) view.findViewById(R.id.profilePic);
+        holder.textViewAction = (TextView) view.findViewById(R.id.textViewAction);
+        holder.textViewName = (TextView) view.findViewById(R.id.textViewName);
+        holder.textViewSimpleLocation = (TextView) view.findViewById(R.id.textViewSimpleLocation);
+        holder.textViewDateTime = (TextView) view.findViewById(R.id.textViewDateTime);
+        //pass it to the view
+        view.setTag(holder);
+
+        return view;
+
+
     }
 
     // The bindView method is used to bind all data to a given view
     // such as setting the text on a TextView.
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        // Find fields to populate in inflated template
-        ImageView imageViewProfilePic = (ImageView) view.findViewById(R.id.profilePic);
-        TextView textViewAction = (TextView) view.findViewById(R.id.textViewAction);
-        TextView textViewName = (TextView) view.findViewById(R.id.textViewName);
-        TextView textViewSimpleLocation = (TextView) view.findViewById(R.id.textViewSimpleLocation);
-        TextView textViewDateTime = (TextView) view.findViewById(R.id.textViewDateTime);
+
+
 
         // Extract properties from cursor
         byte[] profilePicByte = cursor.getBlob(cursor.getColumnIndexOrThrow(DBHandler.KEY_PROFILEPIC));
@@ -88,15 +115,14 @@ public class CustomCursorAdapter extends CursorAdapter {
 
         String distanceBetween = ef.getDistanceBetween(Base.lastKnownLocation, lat, longString);
 
-        //populate fields with extraced properties
-        imageViewProfilePic.setImageBitmap(profilePicBmp);
-        textViewAction.setText(action);
-        textViewName.setText(name);
-        textViewSimpleLocation.setText(distanceBetween);
-        textViewDateTime.setText(timeAgo);
-
-
-
+        //retrieve the tag set in viewholder from newView() for optimization
+        //OPTIMIZATION - //populate fields with extraced properties
+        ViewHolder holder = (ViewHolder) view.getTag();
+        holder.imageViewProfilePic.setImageBitmap((profilePicBmp));
+        holder.textViewAction.setText(action);
+        holder.textViewName.setText(name);
+        holder.textViewSimpleLocation.setText(distanceBetween);
+        holder.textViewDateTime.setText(timeAgo);
     }
 
 }

@@ -8,7 +8,7 @@
     android:layout_gravity="center_vertical"
     android:gravity="center_vertical"
     android:textAlignment="center"
-    android:background="@color/transparent">
+    android:background="@color/white">
 
     <!-- https://github.com/vinc3m1/RoundedImageView -->
     <com.makeramen.roundedimageview.RoundedImageView
@@ -30,108 +30,92 @@
         app:riv_oval="true"
        />
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-
-
+        android:layout_weight="3"
         >
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/black"
-            android:textSize="35sp"
-            android:fontFamily="sans-serif-light"
-            android:textStyle="bold"
-            android:text="|"
-            />
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:id="@+id/textViewAction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:gravity="left"
+                android:textSize="20sp"
+                android:fontFamily="sans-serif-thin"
+                android:textStyle="bold"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:id="@+id/textViewName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/grey"
+                android:gravity="left"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:fontFamily="sans-serif-thin"
+                />
+            </LinearLayout>
     </LinearLayout>
-    <TextView
-        android:id="@+id/textViewAction"
-        android:layout_weight="1.5"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:gravity="center_vertical|left"
-        android:textSize="35sp"
-        android:fontFamily="sans-serif-light"
-        android:textStyle="bold"/>
-    <TextView
-        android:id="@+id/textViewDash2"
-        android:layout_weight="0.2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:gravity="center_vertical|center"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        android:text="-"
-        android:fontFamily="sans-serif-thin"
-        />
-    <!-- users name -->
-    <TextView
-        android:id="@+id/textViewName"
-        android:layout_weight="0.8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:gravity="center_vertical|left"
-        android:textSize="10sp"
-        android:maxLines="2"
-        android:lines="2"
-        android:fontFamily="sans-serif-thin"
+    <!-- http://stackoverflow.com/questions/5049852/android-drawing-separator-divider-line-in-layout -->
 
-        />
-    <TextView
-        android:id="@+id/textViewDash1"
-        android:layout_weight="0.2"
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/gradient_divider"/>
+
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:gravity="center_vertical|center"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        android:text="-"
-        android:fontFamily="sans-serif-thin"
-        />
+        android:orientation="vertical"
+        android:layout_weight="1.8"
+        android:layout_marginRight="10dp"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+                <TextView
+                    android:id="@+id/textViewSimpleLocation"
+                    android:layout_weight="0.8"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/grey"
+                    android:gravity="right"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:maxLines="1"
+                    android:lines="1"
+                    android:fontFamily="sans-serif-thin"
 
-    <TextView
-        android:id="@+id/textViewSimpleLocation"
-        android:layout_weight="0.8"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:gravity="center_vertical|left"
-        android:textSize="10sp"
-        android:maxLines="1"
-        android:lines="1"
-        android:fontFamily="sans-serif-thin"
-
-        />
-    <TextView
-        android:id="@+id/textViewDash"
-        android:layout_weight="0.2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:padding="5dp"
-        android:gravity="center_vertical|center"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        android:text="-"
-        android:fontFamily="sans-serif-thin"
-        />
-
-    <TextView
-        android:id="@+id/textViewDateTime"
-        android:layout_weight="0.7"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical|right"
-        android:maxLines="2"
-        android:lines="2"
-        android:textColor="@color/black"
-        android:textSize="10sp"
-        android:fontFamily="sans-serif-thin"
-        />
-
+                    />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+                <TextView
+                android:id="@+id/textViewDateTime"
+                android:layout_weight="0.7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:maxLines="2"
+                android:textColor="@color/grey"
+                android:textSize="15sp"
+                    android:textStyle="bold"
+                android:fontFamily="sans-serif-thin"
+                />
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

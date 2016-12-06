@@ -21,6 +21,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -121,6 +122,8 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
         btnStartLocationUpdates = (Button) myView.findViewById(R.id.btnStartLocationUpdates);
         btnSaveLocation = (Button) myView.findViewById(R.id.btnSave);
         activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
+        //set the text input type to capitalize words
+        activityTextBox.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
         rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
         rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
         rbDefault.setChecked(true);//sets the default radio button to avoid getting a reference on null object later

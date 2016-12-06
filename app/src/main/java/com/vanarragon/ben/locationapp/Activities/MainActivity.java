@@ -23,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.google.android.gms.location.LocationServices;
+import com.vanarragon.ben.locationapp.Fragments.MyLocationsFragment;
 import com.vanarragon.ben.locationapp.Volley.App;
 import com.vanarragon.ben.locationapp.Volley.VolleySingleton;
 
@@ -210,14 +211,15 @@ public class MainActivity extends Base
         } else if (id == R.id.nav_third_layout) {
             fragmentManager .beginTransaction()
                     .replace(R.id.content_frame
-                            ,   new ThirdFragment())
+                            ,   new MyLocationsFragment())
                     .commit();
+            getSupportActionBar().setTitle("My Locations");
         } else if (id == R.id.nav_settings) {
             fragmentManager .beginTransaction()
                     .replace(R.id.content_frame
                             ,   new SettingsFragment())
                     .commit();
-            getSupportActionBar().setTitle("Settings");
+
         }else if (id == R.id.nav_share) {
 
         } else if (id == R.id.nav_send) {

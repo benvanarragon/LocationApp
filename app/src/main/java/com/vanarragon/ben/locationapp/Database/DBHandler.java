@@ -200,6 +200,18 @@ public class DBHandler extends SQLiteOpenHelper {
         }
         return c;
     }
+
+    public Cursor getRecentLocations(String email){
+        //String where  = KEY_EMAIL + " = " + email;
+        SQLiteDatabase db = this.getWritableDatabase();
+        //String selectQuery = "SELECT "+ KEY_LAT + ", "+ KEY_LONG + ", " + KEY_ACTION  + ", " + KEY_DATETIME + " FROM " + TABLE_LOCATIONS;
+        Cursor c = db.query(true, TABLE_LOCATIONS,ALL_KEYS, "email=?" ,new String[]{email},null,null,KEY_DATETIME+" DESC" ,null);
+        if(c!=null){
+            c.moveToFirst();
+        }
+        return c;
+    }
+
     //get a specific row (by rowId)
     public Cursor getRow(long rowId){
         String where  = " " + KEY_ID + " = " + rowId;

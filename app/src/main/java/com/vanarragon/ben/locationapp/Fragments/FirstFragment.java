@@ -118,8 +118,8 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
 
         lblLocation = (TextView) myView.findViewById(R.id.lblLocation);
         lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
-        btnShowLocation = (Button) myView.findViewById(R.id.btnShowLocation);
-        btnStartLocationUpdates = (Button) myView.findViewById(R.id.btnStartLocationUpdates);
+        //btnShowLocation = (Button) myView.findViewById(R.id.btnShowLocation);
+        //btnStartLocationUpdates = (Button) myView.findViewById(R.id.btnStartLocationUpdates);
         btnSaveLocation = (Button) myView.findViewById(R.id.btnSave);
         activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
         //set the text input type to capitalize words
@@ -132,7 +132,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
             buildGoogleApiClient();
         }
 
-        btnShowLocation.setOnClickListener(new View.OnClickListener() {
+        /*btnShowLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 displayLocation();
@@ -144,7 +144,7 @@ public class FirstFragment extends Fragment implements GoogleApiClient.Connectio
             public void onClick(View v) {
                 togglePeriodicLocationUpdates();
             }
-        }));
+        }));*/
 
         //SAVES THE RECORD
         btnSaveLocation.setOnClickListener(new View.OnClickListener() {

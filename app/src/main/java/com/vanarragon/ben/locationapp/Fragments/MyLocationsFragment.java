@@ -44,28 +44,12 @@ public class MyLocationsFragment extends Fragment implements SwipeRefreshLayout.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // ADD CODE TO START EDIT ACTIVITY HERE
-                // Start NewActivity.class
-                /*Intent myIntent = new Intent(getActivity(),
-                        EditActivity.class);
-                getActivity().startActivity(myIntent);*/
 
                 Cursor mycursor = (Cursor)listView.getItemAtPosition(position);
 
-
-                /*Snackbar snackbar = Snackbar
-                        .make(view, "id:" + mycursor.getString(0) +
-                                ",lat: " + mycursor.getString(1) +
-                                ",long: " + mycursor.getString(2) +
-                                ",action: " + mycursor.getString(3) +
-                                ",date: " + mycursor.getString(4) +
-                                ",privacy: " + mycursor.getString(5) +
-                                ",place: " + mycursor.getString(6), Snackbar.LENGTH_INDEFINITE);
-                snackbar.show();*/
-
                 //DATABASE STEP
                 //http://stackoverflow.com/questions/24555417/how-to-send-data-from-one-fragment-to-another-fragment
-                EditFragment ef = new EditFragment();
+                EditMyLocationsFragment ef = new EditMyLocationsFragment();
                 Bundle bundle = new Bundle();
                 bundle.putString("id", mycursor.getString(0));
                 bundle.putString("lat", mycursor.getString(1));

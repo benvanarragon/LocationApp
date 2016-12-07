@@ -43,7 +43,7 @@ import com.vanarragon.ben.locationapp.R;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class EditFragment extends Fragment implements OnMapReadyCallback,
+public class EditMyLocationsFragment extends Fragment implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener, LocationListener {
     String id,lat,longString,action,date,privacy,simpleLoc,name,email;
     byte[] profilePic;
@@ -53,7 +53,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     //layout stuff
     private TextView lblLocation;
     private TextView lblDate;
-    private TextView activityTextBox;
+    private EditText activityTextBox;
     private RadioGroup rg;
     private RadioButton rb, rbDefault;
     private ImageView iv;
@@ -61,11 +61,11 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        myView = inflater.inflate(R.layout.edit_layout, container, false);
+        myView = inflater.inflate(R.layout.edit_my_locations_layout, container, false);
 
         lblLocation = (TextView) myView.findViewById(R.id.lblLocation);
         lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
-        activityTextBox = (TextView) myView.findViewById(R.id.activityTextBox);
+        activityTextBox = (EditText) myView.findViewById(R.id.activityTextBox);
         rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
         rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
         iv = (ImageView)myView.findViewById(R.id.imgProfilePicture);
@@ -354,8 +354,8 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     }
 
     //custom parent method for multiple fragments
-    public String getDistanceBetween(android.location.Location location, String lat, String longString){
-        android.location.Location currentLoc = new android.location.Location("");
+    public String getDistanceBetween(Location location, String lat, String longString){
+        Location currentLoc = new Location("");
         currentLoc.setLatitude(Double.parseDouble(lat));
         currentLoc.setLongitude(Double.parseDouble(longString));
         String distanceFormatted;

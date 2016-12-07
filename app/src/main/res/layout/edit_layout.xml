@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
-    android:background="@color/colorSecondary">
+    android:background="@color/white">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
@@ -12,14 +12,13 @@
 
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:id="@+id/Top_half_layout"
-        android:background="@color/colorSecondary">
+        android:id="@+id/Top_half_layout">
 
-        <EditText
+        <TextView
             android:id="@+id/activityTextBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="@string/action_hint"
+
             android:inputType="text"
             android:textColorHint="@color/colorAccent"
             android:textColor="@color/colorAccent"
@@ -40,8 +39,8 @@
             android:layout_above="@+id/lblDate"
             android:layout_centerHorizontal="true" />
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_centerHorizontal="true"
             android:scaleType="fitXY"
             android:id="@+id/imgProfilePicture"/>

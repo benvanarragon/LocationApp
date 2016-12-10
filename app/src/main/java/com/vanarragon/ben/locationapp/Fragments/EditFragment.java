@@ -5,9 +5,11 @@ package com.vanarragon.ben.locationapp.Fragments;
  */
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -22,6 +24,8 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.marlonlom.utilities.timeago.TimeAgo;
+import com.github.marlonlom.utilities.timeago.TimeAgoMessages;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -41,6 +45,9 @@ import com.vanarragon.ben.locationapp.Activities.Base;
 import com.vanarragon.ben.locationapp.Database.DbBitmapUtility;
 import com.vanarragon.ben.locationapp.R;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
 public class EditFragment extends Fragment implements OnMapReadyCallback,
@@ -54,14 +61,19 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
     private TextView lblLocation;
     private TextView lblDate;
     private TextView activityTextBox;
+    private TextView lblEmail;
     private RadioGroup rg;
     private RadioButton rb, rbDefault;
     private ImageView iv;
+    String timeAgo;
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         myView = inflater.inflate(R.layout.edit_layout, container, false);
+
+
 
         lblLocation = (TextView) myView.findViewById(R.id.lblLocation);
         lblDate = (TextView) myView.findViewById(R.id.lblDate) ;
@@ -69,6 +81,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
         rg = (RadioGroup) myView.findViewById(R.id.rgPrivacy);
         rbDefault = (RadioButton) myView.findViewById(R.id.rb_public);
         iv = (ImageView)myView.findViewById(R.id.imgProfilePicture);
+        lblEmail = (TextView)myView.findViewById(R.id.lblEmail);
 
 
 
@@ -99,17 +112,41 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
             //convert profilePic from bytearray to bitmap
             Bitmap profilePicture = DbBitmapUtility.getImage(profilePic);
 
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm");
+
+            try {
+                Date d = sdf.parse(date);
+                long time = d.getTime();
+                timeAgo = TimeAgo.using(time, new TimeAgoMessages.Builder().defaultLocale().build());
+
+                SimpleDateFormat fmtOut = new SimpleDateFormat("MMMM-dd-yyyy HH:mm");
+                String englishDate = fmtOut.format(d).toString();
+
+                timeAgo = timeAgo + " - " + englishDate;
+            }catch(java.text.ParseException e){
+                e.printStackTrace();
+            }
 
 
 
-            lblLocation.setText(simpleLoc);
+            //convert distance between
+
+
+            String distanceBetween = getDistanceBetween(Base.lastKnownLocation, lat, longString);
+
+
+            lblEmail.setText(email);
+            lblLocation.setText(distanceBetween + " at " + simpleLoc);
             iv.setImageBitmap(profilePicture);
-            lblDate.setText(date);
+            lblDate.setText(timeAgo);
             activityTextBox.setText(action);
         }
 
         return myView;
     }
+
+
+
 
     LocationRequest mLocationRequest;
     GoogleApiClient mGoogleApiClient;
@@ -156,6 +193,7 @@ public class EditFragment extends Fragment implements OnMapReadyCallback,
         }
         return true;
     }
+
 
 
     @Override

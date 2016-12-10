@@ -3,6 +3,7 @@ package com.vanarragon.ben.locationapp.Activities;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
@@ -174,10 +175,10 @@ public class MainActivity extends Base
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
+        /*//noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -214,17 +215,27 @@ public class MainActivity extends Base
                             ,   new MyLocationsFragment())
                     .commit();
             getSupportActionBar().setTitle("My Locations");
-        } else if (id == R.id.nav_settings) {
-            fragmentManager .beginTransaction()
-                    .replace(R.id.content_frame
-                            ,   new SettingsFragment())
-                    .commit();
-            getSupportActionBar().setTitle("Card View");
+//        } else if (id == R.id.nav_settings) { PUT BACK
+//            fragmentManager .beginTransaction()
+//                    .replace(R.id.content_frame
+//                            ,   new SettingsFragment())
+//                    .commit();
+//            getSupportActionBar().setTitle("Card View");
         }else if (id == R.id.nav_share) {
+            try {
+                Intent i = new Intent(Intent.ACTION_SEND);
+                i.setType("text/plain");
+                i.putExtra(Intent.EXTRA_SUBJECT, "Check In");
+                String sAux = "\nLet me recommend you this application\n\n";
+                sAux = sAux + "REPLACE WITH MY PLAYSTORE LINK \n\n";
+                i.putExtra(Intent.EXTRA_TEXT, sAux);
+                startActivity(Intent.createChooser(i, "Please choose an option"));
+            } catch(Exception e) {
+                //e.toString();
+            }
+        } /*else if (id == R.id.nav_send) {
 
-        } else if (id == R.id.nav_send) {
-
-        }
+        }*/
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

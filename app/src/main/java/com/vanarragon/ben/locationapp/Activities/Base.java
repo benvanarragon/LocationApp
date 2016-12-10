@@ -6,10 +6,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +77,17 @@ public class Base extends AppCompatActivity {
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+    }
+    //http://stackoverflow.com/questions/12953547/android-opening-an-email-application-on-clicking-the-label
+    public void onEmailClick(View v){
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.setClassName("com.google.android.gm", "com.google.android.gm.ComposeActivityGmail");
+        sendIntent.putExtra(Intent.EXTRA_EMAIL, new String[] { "email@gmail.com" });
+        sendIntent.setData(Uri.parse(Base.googleMail));
+        sendIntent.putExtra(Intent.EXTRA_SUBJECT, "enter subject");
+        sendIntent.setType("plain/text");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "Insert text");
+        startActivity(sendIntent);
     }
 
     @Override

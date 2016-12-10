@@ -194,7 +194,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String where  = null;
         SQLiteDatabase db = this.getWritableDatabase();
         //String selectQuery = "SELECT "+ KEY_LAT + ", "+ KEY_LONG + ", " + KEY_ACTION  + ", " + KEY_DATETIME + " FROM " + TABLE_LOCATIONS;
-        Cursor c = db.query(true, TABLE_LOCATIONS,ALL_KEYS, where,null,null,null,KEY_DATETIME+" DESC" ,null);
+        Cursor c = db.query(true, TABLE_LOCATIONS,ALL_KEYS, "privacylevel!=?",new String[]{"private"},null,null,KEY_DATETIME+" DESC" ,null);
         if(c!=null){
             c.moveToFirst();
         }

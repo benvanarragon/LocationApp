@@ -33,7 +33,7 @@ import java.util.Locale;
  */
 //https://guides.codepath.com/android/Populating-a-ListView-with-a-CursorAdapter
 public class CustomCursorAdapter extends CursorAdapter {
-
+    EditFragment ef = new EditFragment();
     String timeAgo;
 
     //http://stackoverflow.com/questions/12223293/cursoradapter-bindview-optimization
@@ -111,7 +111,7 @@ public class CustomCursorAdapter extends CursorAdapter {
         }
 
         //convert distance between
-        EditFragment ef = new EditFragment();
+
 
         String distanceBetween = ef.getDistanceBetween(Base.lastKnownLocation, lat, longString);
 

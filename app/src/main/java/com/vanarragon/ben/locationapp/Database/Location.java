@@ -2,9 +2,19 @@
 
 package com.vanarragon.ben.locationapp.Database;
 
+import android.app.Application;
+import android.content.Context;
+import android.database.Cursor;
+import android.util.Log;
+
+import com.vanarragon.ben.locationapp.Activities.Base;
+import com.vanarragon.ben.locationapp.Volley.App;
+
 import java.sql.Blob;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jamin on 2016-11-21.
@@ -24,7 +34,6 @@ public class Location {
         private String email,name;
         private byte[] profilePic;
 
-    //IF YOU ADD NEW COLUMNS, YOU MUST UN INSTALL THE APP AND RECREATE THE DATABASE
 
 
 
@@ -124,6 +133,54 @@ public class Location {
 
     public void setPrivacyLevel(String privacyLevel) {
         PrivacyLevel = privacyLevel;
+    }
+
+
+    //http://stackoverflow.com/questions/5482402/android-load-values-from-sqlite-database-to-an-arraylist
+    public List<Location> getResults() {
+
+        DBHandler db = new DBHandler(App.getContext()); //my database helper file
+        db.getWritableDatabase();
+
+        List<Location> resultList = new ArrayList<Location>();
+
+
+        Cursor cursor = db.getRecentLocations(); //function to retrieve all values from a table- written in MyDb.java file
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    byte[] profilePicByte = cursor.getBlob(cursor.getColumnIndexOrThrow(DBHandler.KEY_PROFILEPIC));
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(DBHandler.KEY_ID));
+                    String action = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_ACTION));
+                    String name = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_NAME));
+                    String simpleLocation = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_SIMPLELOCATION));
+                    String dateTime = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_DATETIME));
+                    String lat = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_LAT));
+                    String longString = cursor.getString(cursor.getColumnIndexOrThrow(DBHandler.KEY_LONG));
+
+
+                    Location location = new Location();
+                    location.setId(id);
+                    location.setAction(action);
+                    location.setName(name);
+                    location.setSimpleLocation(simpleLocation);
+                    location.setDateTime(dateTime);
+                    location.setLat(Double.parseDouble(lat));
+                    location.setLong(Double.parseDouble(longString));
+                    location.setProfilePic(profilePicByte);
+                    resultList.add(location);
+                } while (cursor.moveToNext());
+            }
+        }catch (Exception e) {
+                Log.e("Location.java: ", "Error " + e.toString());
+            }
+
+
+
+        cursor.close();
+
+        db.close();
+        return resultList;
     }
 }
 

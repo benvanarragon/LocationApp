@@ -116,11 +116,12 @@ unsupported per the developer console.
 Screens and Processes
 =====================
 
-![](media/image2.png){width="1.7861111111111112in" height="3.1770833333333335in"}![](media/image3.jpeg){width="1.7729166666666667in" height="3.1527777777777777in"} Splash and Login 
+
+Splash and Login 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-![](media/image4.png){width="1.7554702537182851in"
-height="3.120833333333333in"}
+
+<img src=media/image2.png width=250 height=400 /><img src=media/image3.png width=250 height=400 /><img src=media/image4.png width=250 height=400 />
 
 The initial screenshot is of the splash screen. This is trying to depict
 the image of adding a location to the user’s current location, which is

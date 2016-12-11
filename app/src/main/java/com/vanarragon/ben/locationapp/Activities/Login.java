@@ -360,8 +360,8 @@ public class Login extends AppCompatActivity implements GoogleApiClient.Connecti
             }
         }
         Base.lastKnownLocation = LocationServices.FusedLocationApi.getLastLocation(Base.mGoogleApiClient);
-        Log.d(TAG, "connectedcallback:" + Base.mGoogleApiClient.isConnected());
-        Log.d(TAG, "location:" + Base.lastKnownLocation.getLatitude() + ", " + Base.lastKnownLocation.getLongitude());
+        //Log.d(TAG, "connectedcallback:" + Base.mGoogleApiClient.isConnected());
+        //Log.d(TAG, "location:" + Base.lastKnownLocation.getLatitude() + ", " + Base.lastKnownLocation.getLongitude());
 
     }
 

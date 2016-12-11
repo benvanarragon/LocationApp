@@ -223,11 +223,12 @@ public class MainActivity extends Base
 //            getSupportActionBar().setTitle("Card View");
         }else if (id == R.id.nav_share) {
             try {
+                //http://stackoverflow.com/questions/4969217/share-application-link-in-android
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("text/plain");
                 i.putExtra(Intent.EXTRA_SUBJECT, "Check In");
                 String sAux = "\nLet me recommend you this application\n\n";
-                sAux = sAux + "REPLACE WITH MY PLAYSTORE LINK \n\n";
+                sAux = sAux + "https://play.google.com/apps/testing/com.vanarragon.ben.locationapp \n\n";
                 i.putExtra(Intent.EXTRA_TEXT, sAux);
                 startActivity(Intent.createChooser(i, "Please choose an option"));
             } catch(Exception e) {

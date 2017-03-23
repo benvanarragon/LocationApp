@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3EB254</color>
+    <color name="colorSecondary">#37a04b</color>
+    <color name="colorPrimaryDark">#3EB254</color>
+    <color name="colorAccent">#8bd098</color>
+
+    <!-- my custom colors -->
+
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="grey">#d3d3d3</color>
+    <color name="btn_bg">#0c2310</color>
+
+    <!-- for refresh loading icon -->
+    <color name="orange">#FF9900</color>
+    <color name="green">#009900</color>
+    <color name="blue">#000099</color>
+
+
+
+    <color name="transparent">#00ffffff</color>
+
+
+
+</resources>

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:background="@color/white">
+
+    <TextView
+        android:text="@string/lbl_you_are_at"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:id="@+id/textView2"
+        android:textSize="25dp"
+        android:textColor="@color/black"
+        android:textStyle="bold"/>
+    <TextView
+
+        android:id="@+id/lblLocation"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16dp"/>
+    <TextView
+
+        android:id="@+id/lblDate"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="16dp"/>
+
+    <TextView
+        android:text="@string/lbl_Action"
+        android:id="@+id/lblAction"
+        android:padding="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/activityTextBox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="@string/action_hint"
+        android:inputType="textCapWords"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:maxLength="16"
+
+        android:background="@android:color/transparent"/>
+
+
+
+    <RadioGroup
+        android:id="@+id/rgPrivacy"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:theme="@style/BlueCheck"
+        android:background="@color/transparent">
+        <RadioButton
+            android:id="@+id/rb_private"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/BlueCheck"
+            android:text="@string/chkBox_private"
+            android:textColor="@color/black"
+            android:buttonTint="@color/black"
+            android:layout_marginRight="50dp"/>
+        <RadioButton
+            android:id="@+id/rb_public"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/BlueCheck"
+            android:text="@string/chkBox_public"
+            android:textColor="@color/black"
+            android:buttonTint="@color/black"
+            android:layout_marginRight="50dp"/>
+        <RadioButton
+            android:id="@+id/rb_friends"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:theme="@style/BlueCheck"
+            android:text="@string/chkBox_friends"
+            android:textColor="@color/black"
+            android:buttonTint="@color/black"/>
+    </RadioGroup>
+
+    <!--<LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:background="@color/colorSecondary">
+
+            <Button
+                android:id="@+id/btnStartLocationUpdates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/btn_bg"
+                android:layout_marginRight="20dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="@string/btn_start_location_updates"
+                android:textColor="@color/white"
+
+                />
+            <Button
+                android:id="@+id/btnShowLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/btn_bg"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="@string/btn_get_location"
+                android:textColor="@color/white"
+
+                />
+        </LinearLayout>-->
+    <Button
+        android:layout_width="285dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="15dp"
+        android:id="@+id/btnSave"
+        android:background="@color/colorPrimary"
+        android:text="@string/btnSaveText"
+        android:textColor="@color/white"/>
+</LinearLayout>

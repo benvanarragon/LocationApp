@@ -1,0 +1,65 @@
+apply plugin: 'com.android.application'
+
+
+android {
+    signingConfigs {
+        config {
+            storeFile file('C:/Users/jamin/AndroidKeyStore/keystore.release.jks')
+            keyAlias 'releasekey'
+            keyPassword 'Carrots#11'
+            storePassword 'Carrots#11'
+        }
+    }
+    compileSdkVersion 23
+    buildToolsVersion '23.0.2'
+    defaultConfig {
+        applicationId "com.vanarragon.ben.locationapp"
+        minSdkVersion 19
+        targetSdkVersion 23
+        versionCode 2
+        versionName "Alpha 0.1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.android.support:design:23.4.0'
+    compile 'com.makeramen:roundedimageview:2.2.1'
+    //for google play services
+    compile 'com.google.android.gms:play-services:9.8.0'
+    compile 'com.google.android.gms:play-services-location:9.8.0'
+    compile 'com.google.android.gms:play-services-auth:9.8.0'
+    compile 'com.android.volley:volley:1.0.0'
+    compile 'com.google.code.gson:gson:2.4'
+    compile 'joda-time:joda-time:2.9.4'
+    compile 'com.android.volley:volley:1.0.0'
+    testCompile 'junit:junit:4.12'
+    //swipre reveal layout
+    //https://github.com/chthai64/SwipeRevealLayout
+    //time ago library from android-arsenal.com/details/1/4707
+    compile 'com.github.marlonlom:timeago:3.0.1'
+    //support for card view and recycler view technology
+    compile 'com.android.support:cardview-v7:23.4.+'
+    compile 'com.android.support:recyclerview-v7:23.4.+'
+    //support for custom animation libraries from github
+    compile 'com.nineoldandroids:library:2.4.0'
+    compile 'com.daimajia.easing:library:1.0.1@aar'
+    compile 'com.daimajia.androidanimations:library:1.1.3@aar'
+}
+
+
+apply plugin: 'com.google.gms.google-services'

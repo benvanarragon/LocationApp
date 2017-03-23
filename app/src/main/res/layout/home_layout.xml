@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:background="@color/grey"
+    android:id="@+id/srl">
+
+<!--    <TextView
+        android:text="Home Layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="152dp"
+        android:id="@+id/textView2" />-->
+
+
+<!-- uses custom location_layout for the rows -->
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/lvNewsFeed"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="0dp"
+        android:layout_alignParentTop="true"
+        android:drawSelectorOnTop="true"
+        />
+
+
+</android.support.v4.widget.SwipeRefreshLayout>

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1086808786337",
+    "project_id": "locationapp-1479656323541"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086808786337:android:670e0cb678f9ec7b",
+        "android_client_info": {
+          "package_name": "com.vanarragon.ben.locationapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1086808786337-7s2ng8ht9d4p5hbnjv529s0stga3qt8r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vanarragon.ben.locationapp",
+            "certificate_hash": "F83719C6703DA1C7449A2A57BA650219E76BE535"
+          }
+        },
+        {
+          "client_id": "1086808786337-791prjjnlnvtcsi8iv530mhnok2i33kb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAC-P6ELRSeMulJLpwolKKReom6znoJwrg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
